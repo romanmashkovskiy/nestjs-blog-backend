@@ -1,5 +1,5 @@
-import { serialize, parse } from 'cookie';
 import * as config from 'config';
+import { parse, serialize } from 'cookie';
 
 const jwtConfig = config.get('jwt');
 

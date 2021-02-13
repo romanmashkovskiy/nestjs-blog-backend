@@ -1,11 +1,12 @@
-import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
 import * as config from 'config';
-import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { Strategy } from 'passport-jwt';
+
 import { User } from '../../users/user.entity';
-import { AuthService } from '../auth.service';
 import { getTokenCookie } from '../../utils/auth-cookies';
+import { AuthService } from '../auth.service';
+import { JwtPayload } from '../interfaces';
 
 const jwtConfig = config.get('jwt');
 
@@ -19,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<User> {
+  async validate(payload: JwtPayload): Promise<Partial<User>> {
     const { id } = payload;
 
     const user = await this.authService.findById(id);

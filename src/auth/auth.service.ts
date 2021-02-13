@@ -5,8 +5,13 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as config from 'config';
+import { randomBytes } from 'crypto';
 import { Request as Req, Response as Res } from 'express';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+
+import { User } from '../users/user.entity';
+import { UsersService } from '../users/users.service';
+import { removeTokenCookie, setTokenCookie } from '../utils/auth-cookies';
 import {
   AuthForgotPasswordDto,
   AuthRegisterDto,
@@ -14,10 +19,7 @@ import {
   AuthVerifyEmailCheckCodeDto,
   AuthVerifyEmailSendCodeDto,
 } from './dtos';
-import { UsersService } from '../users/users.service';
-import { removeTokenCookie, setTokenCookie } from '../utils/auth-cookies';
-import { randomBytes } from 'crypto';
-import * as config from 'config';
+import { JwtPayload } from './interfaces';
 
 const resetPasswordConfig = config.get('resetPassword');
 
@@ -30,7 +32,7 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
-  async login(req: Req, res: Res): Promise<any> {
+  async login(req: Req, res: Res): Promise<{ user: Partial<User> }> {
     const { user } = req;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -167,37 +169,31 @@ export class AuthService {
     return { message: 'success' };
   }
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<Partial<User>> {
     const user = await this.usersService.findUser({ email });
     if (user && (await user.validatePassword(password))) {
-      const {
-        password,
-        resetPasswordToken,
-        resetPasswordTokenExpires,
-        isEmailVerified,
-        validateEmailToken,
-        validateEmailTokenExpires,
-        ...result
-      } = user;
-      return result;
+      return this.returnUser(user);
     }
     return null;
   }
 
-  async findById(id: number): Promise<any> {
+  async findById(id: number): Promise<Partial<User>> {
     const user = await this.usersService.findById(id);
     if (user) {
-      const {
-        password,
-        resetPasswordToken,
-        resetPasswordTokenExpires,
-        isEmailVerified,
-        validateEmailToken,
-        validateEmailTokenExpires,
-        ...result
-      } = user;
-      return result;
+      return this.returnUser(user);
     }
     return null;
+  }
+
+  private returnUser(user: User): Partial<User> {
+    const {
+      password,
+      resetPasswordToken,
+      resetPasswordTokenExpires,
+      validateEmailToken,
+      validateEmailTokenExpires,
+      ...result
+    } = user;
+    return result;
   }
 }

@@ -1,15 +1,17 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
+  Request,
+  Response,
   UseGuards,
   UsePipes,
   ValidationPipe,
-  Request,
-  Get,
-  Response,
 } from '@nestjs/common';
 import { Request as Req, Response as Res } from 'express';
+
+import { User } from '../users/user.entity';
 import { AuthService } from './auth.service';
 import {
   AuthForgotPasswordDto,
@@ -18,7 +20,6 @@ import {
   AuthVerifyEmailCheckCodeDto,
   AuthVerifyEmailSendCodeDto,
 } from './dtos';
-import { User } from '../users/user.entity';
 import { JwtAuthGuard, LocalAuthGuard } from './guards';
 
 @Controller('auth')
@@ -30,7 +31,7 @@ export class AuthController {
   async login(
     @Request() req: Req,
     @Response({ passthrough: true }) res: Res,
-  ): Promise<User> {
+  ): Promise<{ user: Partial<User> }> {
     return this.authService.login(req, res);
   }
 

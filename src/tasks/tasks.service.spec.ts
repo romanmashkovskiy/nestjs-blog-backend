@@ -1,10 +1,11 @@
-import { Test } from '@nestjs/testing';
-import { TasksService } from './tasks.service';
-import { TaskRepository } from './task.repository';
-import { GetTasksFilterDto } from './dtos/get-tasks-filter.dto';
-import { TasksStatus } from './task-status.enum';
 import { NotFoundException } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+
 import { CreateTaskDto } from './dtos/create-task.dto';
+import { GetTasksFilterDto } from './dtos/get-tasks-filter.dto';
+import { TaskRepository } from './task.repository';
+import { TasksStatus } from './task-status.enum';
+import { TasksService } from './tasks.service';
 
 const mockTaskRepository = () => ({
   getTasks: jest.fn(),
