@@ -2,10 +2,12 @@ import * as bcrypt from 'bcryptjs';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { Task } from '../tasks/task.entity';
@@ -30,6 +32,12 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updateAt: Date;
 
   @OneToMany((type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];

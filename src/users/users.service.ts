@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { UserFindQueryInterface } from '../auth/interfaces/user-find-query.interface';
+import { UserFindQueryInterface } from '../auth/interfaces';
 import { UserCreateDto, UserUpdateDto } from './dtos';
 import { User } from './user.entity';
 import { UsersRepository } from './users.repository';

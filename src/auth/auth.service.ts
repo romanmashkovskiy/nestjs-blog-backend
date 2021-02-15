@@ -171,6 +171,8 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<Partial<User>> {
     const user = await this.usersService.findUser({ email });
+    //TODO: why tasks are not returned
+    console.log(user);
     if (user && (await user.validatePassword(password))) {
       return this.returnUser(user);
     }
@@ -179,6 +181,8 @@ export class AuthService {
 
   async findById(id: number): Promise<Partial<User>> {
     const user = await this.usersService.findById(id);
+    //TODO: why tasks are not returned
+    console.log(user);
     if (user) {
       return this.returnUser(user);
     }
